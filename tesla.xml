@@ -45,8 +45,8 @@
 
 		<image objectsize="0">
 			<preview url="preview.jpg" />
-			<!-- <sphere url="panoh.jpg" /> -->
-			<cube url="panos/oct2024/80m/%s/l%l/%0v/l%l_%s_%0v_%0h.jpg" multires="512,640,1280,2560,5120" />
+			<sphere url="panoh.jpg" />
+			<!-- <cube url="panos/oct2024/80m/%s/l%l/%0v/l%l_%s_%0v_%0h.jpg" multires="512,640,1280,2560,5120" /> -->
 
 			<depthmap url="dome.stl" axis="+Z+Y+X" subdiv="0" scale="400" origin="0|-1.9|0" rendermode="3dmodel" hittest="true" />
 		</image>
@@ -84,9 +84,9 @@
 	<view
 		tx="0" ty="120" tz="0"
 		hlookat="133" vlookat="43"
-		fov="25" fovmin="5" fovmax="40"
+		fov="75" fovmin="45" fovmax="140"
 		oz="600"
-		limitview="lookat" vlookatmin="25" vlookatmax="90"
+		limitview="lookat" vlookatmin="5" vlookatmax="90"
 		/>
 
 	<!-- use pan-around controls on start -->
@@ -100,12 +100,12 @@
 
 	<hotspot name="car" keep="true"
 		type="threejs"
-		url="models/sci-fi_building_11.glb"
+		url="models/brezhnev_house_brezhnevka_russian_panel_house.glb"
 		enabled="false"
 		hittest="false"
 		depth="0"
-		scale="0.00385"
-		ry="-75"
+		scale="0.001285"
+		ry="0"
 		ty="133"
 		tx="0"
 		tz="0"
