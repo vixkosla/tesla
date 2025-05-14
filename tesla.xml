@@ -82,8 +82,8 @@
 
 	<!-- startup view -->
 	<view
-		tx="0" ty="50" tz="0"
-		hlookat="133" vlookat="13"
+		tx="0" ty="120" tz="0"
+		hlookat="133" vlookat="43"
 		fov="25" fovmin="5" fovmax="40"
 		oz="600"
 		limitview="lookat" vlookatmin="25" vlookatmax="90"
