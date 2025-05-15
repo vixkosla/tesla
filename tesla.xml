@@ -45,8 +45,8 @@
 
 		<image objectsize="0">
 			<preview url="preview.jpg" />
-			<sphere url="panoh.jpg" />
-			<!-- <cube url="panos/oct2024/80m/%s/l%l/%0v/l%l_%s_%0v_%0h.jpg" multires="512,640,1280,2560,5120" /> -->
+			<!-- <sphere url="panoh.jpg" /> -->
+			<cube url="panos/101_0266__no3D/80m/%s/l%l/%0v/l%l_%s_%0v_%0h.jpg" multires="512,640,1280,2560,5120" />
 
 			<depthmap url="dome.stl" axis="+Z+Y+X" subdiv="0" scale="400" origin="0|-1.9|0" rendermode="3dmodel" hittest="true" />
 		</image>
