@@ -11,7 +11,7 @@
 	<events name="walkinfo_touch" keep="true" devices="mobile" onresize="if(stagewidth GT stageheight, set(layer[walkinfo_touch], align=rightbottom, x=80, y=40); , set(layer[walkinfo_touch], align=bottom, x=50, y=50); );" />
 
 
-	<plugin api="threejs" url="%VIEWER%/plugins/threejs_krpanoplugin.js" keep="true" />
+	<plugin api="threejs" name="threejs" url="%VIEWER%/plugins/threejs_krpanoplugin.js" onready="init_threejs();" keep="true" />
 
 	<threejs
 		shadowmap="pcf"
@@ -37,21 +37,22 @@
         shadowmapbias="0.0001"
         shadowmapnormalbias="0.01"
         shadowmapres="2048"
-        helper="false"
+        helper="true"
         />
 
 
 	<scene name="cloudy" autoload="true" title="Cloudy">
 
 		<image objectsize="0">
-			<preview url="preview.jpg" />
+			<!-- <preview url="panos/101_0266__no3D/preview.jpg" /> -->
 			<!-- <sphere url="panoh.jpg" /> -->
-			<cube url="panos/101_0266__no3D/80m/%s/l%l/%0v/l%l_%s_%0v_%0h.jpg" multires="512,640,1280,2560,5120" />
+			<!-- <cube url="panos/101_0266__no3D/%s/l%l/%0v/l%l_%s_%0v_%0h.jpg" multires="512,640,1280,2560,5120" /> -->
+			<cube url="panos/101_0266__no3D/%s/l%l/%0v/l%l_%s_%0v_%0h.jpg" multires="512,1024,1792,3584,7168" />
 
 			<depthmap url="dome.stl" axis="+Z+Y+X" subdiv="0" scale="400" origin="0|-1.9|0" rendermode="3dmodel" hittest="true" />
 		</image>
 
-		<hotspot name="sun" style="sun" ath="30" atv="-36" colortemperature="5000" />
+		<hotspot name="sun" style="sun" ath="30" atv="236" colortemperature="5000" />
 
 	</scene>
 
@@ -72,7 +73,7 @@
 		<image objectsize="0">
 			<preview url="pano_evening_preview.jpg" />
 			<sphere url="pano_evening_s.jpg" />
-			<depthmap enabled="true" url="dome.stl" axis="+Z+Y+X" subdiv="0" scale="400" origin="0|-1.9|0" rendermode="3dmodel" hittest="true" />
+			<!-- <depthmap enabled="true" url="dome.stl" axis="+Z+Y+X" subdiv="0" scale="400" origin="0|-1.9|0" rendermode="3dmodel" hittest="true" /> -->
 		</image>
 
 		<hotspot name="sun" style="sun" ath="-90" atv="-4" colortemperature="1900" />
@@ -84,12 +85,13 @@
 	<view
 		tx="0" ty="120" tz="0"
 		hlookat="133" vlookat="43"
-		fov="75" fovmin="45" fovmax="140"
-		oz="600"
-		limitview="lookat" vlookatmin="5" vlookatmax="90"
+		fov="5" fovmin="5" fovmax="140"
+		oz="100"
+		limitview="lookat" vlookatmin="-35" vlookatmax="90"
 		/>
+		<!-- projection="stereographic" -->
 
-	<!-- use pan-around controls on start -->
+		<!-- use pan-around controls on start -->
 	<control invert="true" />
 
 	<!-- other views -->
@@ -100,15 +102,16 @@
 
 	<hotspot name="car" keep="true"
 		type="threejs"
-		url="models/brezhnev_house_brezhnevka_russian_panel_house.glb"
+		depthbuffer="true"
+		url="models/panorama_gk_discovery_centered.glb"
 		enabled="false"
 		hittest="false"
 		depth="0"
-		scale="0.001285"
-		ry="0"
-		ty="133"
-		tx="0"
-		tz="0"
+		scale="0.005085"
+		ry="90"
+		ty="135"
+		tx="-50"
+		tz="145"
 		windowtint="0.6"
 		windowtint.onchange="set_car_material('glass.*', 0xFFFFFF, 0.0, 0.0, get(windowtint));"
 		color="0xD1D1D1"
@@ -327,6 +330,52 @@
 			krpano.view.haschanged = true;	// request a redraw
 		}
 	]]></action>
+
+	<action name="init_threejs" type="js"><![CDATA[
+		console.log('hello three')
+		// получаем ссылку на плагин threejs
+		var threePlugin = krpano.get("plugin[threejs]"),
+			scene = threePlugin.scene,
+			camera = threePlugin.camera;
+		
+		console.log(scene);
+		console.log(scene, camera);
+		var THREE = threePlugin.THREE;
+		console.log(THREE);
+		console.log(THREE.GLTFLoader);
+		const GLTFLoader = threePlugin.getmodule("GLTFLoader").GLTFLoader;
+		console.log(GLTFLoader);
+  		var loader = new GLTFLoader();
+		console.log(loader);
+		loader.load("models/panorama_gk_discovery.glb", function(gltf){
+			console.log('Hello World');
+			var obj = gltf.scene;
+			console.log(obj);
+			// тут вы можете задать любые координаты:
+			obj.position.set(  100,  -200,  -500 );   // X=10, Y=5, Z=–20
+			obj.rotation.set(  0,   Math.PI/2, 0 ); // поворот
+
+			  // Починка (опционально) — отключаем фрустум-каллинг для всех дочерних мешей
+			obj.traverse(function(o){
+			if (o.isMesh) o.frustumCulled = false;
+			<!-- console.log(o); -->
+			});
+
+			obj.scale.set(     0.1285,   0.1285,   0.1285 );    // масштаб
+
+			console.log("Model added at", obj.position, "scale", obj.scale);
+
+			<!-- scene.add(obj); -->
+		});
+
+		const mesh = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({color: 0x00ff00}));
+		mesh.scale.set(1, 1, 1)
+		mesh.position.set(1, 0, -1)
+		scene.add(mesh)
+		console.log(mesh)
+		console.log('hey')
+	]]></action>
+
 
 
 	<layer name="credits" keep="true"
