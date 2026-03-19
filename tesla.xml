@@ -166,7 +166,7 @@
         name="car"
         keep="true"
         type="threejs"
-        url="models/puzzle_centered.glb"
+        url="models/puzzle_optimized.glb"
         enabled="false"
         hittest="false"
         depth="0"
