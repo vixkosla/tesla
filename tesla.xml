@@ -32,11 +32,12 @@
 
 	<threejs
         shadowmap="pcf"
-        ambientlight="0.0"
+        ambientlight="0.5"
         shadowfloor="true"
         shadowfloorlevel="133.5"
         shadowflooralpha="0.5"
         envmapurl="preview"
+        envmapintensity="2.0"
     />
 
 	<!-- render all from 3cm to 120m -->
@@ -47,7 +48,7 @@
         type="threejslight"
         mode="sun"
         atview="false"
-        intensity="1.0"
+        intensity="1.5"
         castshadow="true"
         shadowmaprange="500"
         shadowmapnear="50"
@@ -56,6 +57,15 @@
         shadowmapnormalbias="0.01"
         shadowmapres="2048"
         helper="false"
+    />
+
+	<hotspot
+        name="ambient_light"
+        keep="true"
+        type="threejs"
+        mode="ambient"
+        intensity="0.8"
+        color="0xFFFFFF"
     />
 
 
@@ -81,9 +91,8 @@
 
 	</scene>
 
-
+	<!-- Сцены day и sunset используют те же панорамы с разным освещением -->
 	<scene name="day" title="Daylight">
-
 		<image objectsize="0">
 			<preview url="pano_day2_preview.jpg" />
 			<sphere url="pano_day2_s.jpg" />
@@ -97,23 +106,14 @@
                 hittest="true"
             />
 		</image>
-
-		<hotspot
-            name="sun"
-            style="sun"
-            ath="81.5"
-            atv="-40.5"
-            colortemperature="6500"
-        />
+		<hotspot name="sun" style="sun" ath="81.5" atv="-40.5" colortemperature="6500" />
 	</scene>
 
 	<scene name="sunset" title="Sunset">
-
 		<image objectsize="0">
 			<preview url="pano_evening_preview.jpg" />
 			<sphere url="pano_evening_s.jpg" />
 			<depthmap
-                enabled="true"
                 url="dome.stl"
                 axis="+Z+Y+X"
                 subdiv="0"
@@ -123,11 +123,8 @@
                 hittest="true"
             />
 		</image>
-
 		<hotspot name="sun" style="sun" ath="-90" atv="-4" colortemperature="1900" />
-
 	</scene>
-
 
 	<!-- startup view -->
 	<view
@@ -172,29 +169,38 @@
         depth="0"
         scale="0.8"
         ry="-90"
-        ty="-40"
+        ty="20"
         tx="0"
         tz="0"
         windowtint="0.6"
-        windowtint.onchange="set_car_material('glass.*', 0xFFFFFF, 0.0, 0.0, get(windowtint));"
-        color="0xD1D1D1"
-        color.onchange="set_car_material('primary*', get(color), get(roughness), get(metalness));"
-        metalness="0.0"
-        metalness.onchange="set_car_material('primary*', get(color), get(roughness), get(metalness));"
-        roughness="0.28"
-        roughness.onchange="set_car_material('primary*', get(color), get(roughness), get(metalness));"
-        interiorcolor="0xFFFFFF"
-        interiorcolor.onchange="set_car_material('Seat_Leather_white.*', get(interiorcolor), 0.5, 0.0); set_car_material('Putih.*', get(interiorcolor), 0.5, 0.0);"
-        rimscolor="0xFFFFFF"
-        rimscolor.onchange="set_car_material('wheels.6', get(rimscolor), 0.2, 0.5);"
+        windowtint.onchange="set_car_material('Ст 09Г2С ГОСТ19281-80.004*', 0xFFFFFF, 0.0, 0.0, get(windowtint));"
+        color="0x0066FF"
+        color.onchange="set_car_material('Ст 09Г2С ГОСТ19281-80.005*', get(color), get(roughness), get(metalness), null, null, 1.0, 0.05);"
+        metalness="0.9"
+        metalness.onchange="set_car_material('Ст 09Г2С ГОСТ19281-80.005*', get(color), get(roughness), get(metalness), null, null, 1.0, 0.05);"
+        roughness="0.15"
+        roughness.onchange="set_car_material('Ст 09Г2С ГОСТ19281-80.005*', get(color), get(roughness), get(metalness), null, null, 1.0, 0.05);"
+        clearcoat="1.0"
+        clearcoat.onchange="set_car_material('Ст 09Г2С ГОСТ19281-80.005*', get(color), get(roughness), get(metalness), null, null, get(clearcoat), 0.05);"
+        clearcoatRoughness="0.05"
+        clearcoatRoughness.onchange="set_car_material('Ст 09Г2С ГОСТ19281-80.005*', get(color), get(roughness), get(metalness), null, null, 1.0, get(clearcoatRoughness));"
+        rimscolor="0x000000"
+        rimscolor.onchange="set_car_material('Mtl', get(rimscolor), 0.5, 0.0); set_car_material('Mtl4*', get(rimscolor), 0.5, 0.0); set_car_material('Mtl3*', get(rimscolor), 0.5, 0.0); set_car_material('Mtl1*', get(rimscolor), 0.5, 0.0); set_car_material('Mtl6*', get(rimscolor), 0.5, 0.0); set_car_material('Mtl5*', get(rimscolor), 0.5, 0.0);"
         onloaded="removehotspot(car_loadprogress); improve_car_materials();"
     />
 
 	<action name="improve_car_materials">
-		set_car_material('glass.*', 0xFFFFFF, 0.0, 0.0, get(windowtint));
-		set_car_material('wheels.6', 0xFFFFFF, 0.2, 0.5);
-		set_car_material('tembus_red.*', 0xFFFFFF, 0.0, 0.0, 0.2, 0xFFFFFF);
-		set_car_material('movsteer_1.0.0', 0xFFFFFF, 0.7, 0.0);
+		<!-- Стёкла -->
+		set_car_material('Ст 09Г2С ГОСТ19281-80.004*', 0xFFFFFF, 0.0, 0.0, get(windowtint), null, 1.0, 0.05);
+		<!-- Колёса и чёрные детали -->
+		set_car_material('Mtl', 0x000000, 0.5, 0.0);
+		set_car_material('Mtl4*', 0x000000, 0.5, 0.0);
+		set_car_material('Mtl3*', 0x000000, 0.5, 0.0);
+		set_car_material('Mtl1*', 0x000000, 0.5, 0.0);
+		set_car_material('Mtl6*', 0x000000, 0.5, 0.0);
+		set_car_material('Mtl5*', 0x000000, 0.5, 0.0);
+		<!-- Кузов -->
+		set_car_material('Ст 09Г2С ГОСТ19281-80.005*', get(color), get(roughness), get(metalness), null, null, get(clearcoat), 0.05);
 	</action>
 
 
@@ -271,6 +277,18 @@
             ondown="asyncloop(pressed, hotspot[car].roughness=clamp(hotspot[car].roughness+(mouse.dx+mouse.dy)*0.002, 0,1); );"
         />
 		<layer
+            style="button"
+            template="Clearcoat: {{hotspot[car].clearcoat:roundval(hotspot[car].clearcoat,2)}}"
+            cursor="col-resize"
+            ondown="asyncloop(pressed, hotspot[car].clearcoat=clamp(hotspot[car].clearcoat+(mouse.dx+mouse.dy)*0.002, 0,1); );"
+        />
+		<layer
+            style="button"
+            template="Clearcoat Rough: {{hotspot[car].clearcoatRoughness:roundval(hotspot[car].clearcoatRoughness,2)}}"
+            cursor="col-resize"
+            ondown="asyncloop(pressed, hotspot[car].clearcoatRoughness=clamp(hotspot[car].clearcoatRoughness+(mouse.dx+mouse.dy)*0.002, 0,1); );"
+        />
+		<layer
             style="button|colorpicker"
             vartext="Interior"
             var="hotspot[car].interiorcolor"
@@ -333,77 +351,52 @@
 	    	<item
                 name="white"
                 caption="White"
-                onclick="tween(hotspot[car], color=0xD1D1D1, metalness=0.00, roughness=0.28);"
+                onclick="tween(hotspot[car], color=0xD1D1D1, metalness=0.00, roughness=0.28, clearcoat=1.0, clearcoatRoughness=0.05);"
             />
 			<item
                 name="black"
                 caption="Black"
-                onclick="tween(hotspot[car], color=0x000000, metalness=0.25, roughness=0.05);"
+                onclick="tween(hotspot[car], color=0x000000, metalness=0.25, roughness=0.05, clearcoat=1.0, clearcoatRoughness=0.05);"
             />
 			<item
                 name="red"
                 caption="Red"
-                onclick="tween(hotspot[car], color=0xC20000, metalness=0.25, roughness=0.05);"
+                onclick="tween(hotspot[car], color=0xC20000, metalness=0.25, roughness=0.05, clearcoat=1.0, clearcoatRoughness=0.05);"
             />
 			<item
                 name="blue"
                 caption="Blue"
-                onclick="tween(hotspot[car], color=0x2C2E63, metalness=0.88, roughness=0.05);"
+                onclick="tween(hotspot[car], color=0x0066FF, metalness=0.9, roughness=0.15, clearcoat=1.0, clearcoatRoughness=0.05);"
             />
 			<item
                 name="gray"
                 caption="Gray"
-                onclick="tween(hotspot[car], color=0x4B4F62, metalness=0.66, roughness=0.05);"
+                onclick="tween(hotspot[car], color=0x4B4F62, metalness=0.66, roughness=0.05, clearcoat=1.0, clearcoatRoughness=0.05);"
             />
 			<item
                 name="silver"
                 caption="Silver"
-                onclick="tween(hotspot[car], color=0xEEEEEE, metalness=0.84, roughness=0.18);"
+                onclick="tween(hotspot[car], color=0xEEEEEE, metalness=0.84, roughness=0.18, clearcoat=1.0, clearcoatRoughness=0.05);"
             />
 			<item
                 name="chrome"
                 caption="Chrome"
-                onclick="tween(hotspot[car], color=0xFFFFFF, metalness=1.00, roughness=0.00);"
+                onclick="tween(hotspot[car], color=0xFFFFFF, metalness=1.00, roughness=0.00, clearcoat=1.0, clearcoatRoughness=0.05);"
             />
 			<item
                 name="gold"
                 caption="Gold"
-                onclick="tween(hotspot[car], color=0xFFD500, metalness=0.90, roughness=0.10);"
+                onclick="tween(hotspot[car], color=0xFFD500, metalness=0.90, roughness=0.10, clearcoat=1.0, clearcoatRoughness=0.05);"
             />
 			<item
                 name="dgold"
                 caption="DarkGold"
-                onclick="tween(hotspot[car], color=0x705E00, metalness=1.15, roughness=0.20); tween(hotspot[car].rimscolor, 0x705E00);"
+                onclick="tween(hotspot[car], color=0x705E00, metalness=1.15, roughness=0.20, clearcoat=1.0, clearcoatRoughness=0.05); tween(hotspot[car].rimscolor, 0x705E00);"
             />
 			<item
                 name="lineart"
                 caption="LineArt"
-                onclick="tween(hotspot[car], color=0xFFFFFF, metalness=2.00, roughness=0.87);"
-            />
-		</layer>
-
-		<layer
-            style="text"
-            text="Interior"
-            bg="false"
-            enabled="false"
-            flowspacing="8 0 0"
-        />
-		<layer style="combobox" name="interiorcolors" design="editor" width="80">
-	    	<item
-                name="white"
-                caption="White"
-                onclick="tween(hotspot[car].interiorcolor, 0xFFFFFF);"
-            />
-			<item
-                name="black"
-                caption="Black"
-                onclick="tween(hotspot[car].interiorcolor, 0x333333);"
-            />
-			<item
-                name="beige"
-                caption="Beige"
-                onclick="tween(hotspot[car].interiorcolor, 0xC19A57);"
+                onclick="tween(hotspot[car], color=0xFFFFFF, metalness=2.00, roughness=0.87, clearcoat=1.0, clearcoatRoughness=0.05);"
             />
 		</layer>
 
@@ -416,6 +409,11 @@
         />
 		<layer style="combobox" name="rimscolor" design="editor" width="80">
 	    	<item
+                name="black"
+                caption="Black"
+                onclick="tween(hotspot[car].rimscolor, 0x000000);"
+            />
+			<item
                 name="silver"
                 caption="Silver"
                 onclick="tween(hotspot[car].rimscolor, 0xFFFFFF);"
@@ -424,11 +422,6 @@
                 name="gray"
                 caption="Gray"
                 onclick="tween(hotspot[car].rimscolor, 0x666666);"
-            />
-			<item
-                name="black"
-                caption="Black"
-                onclick="tween(hotspot[car].rimscolor, 0x333333);"
             />
 			<item
                 name="gold"
@@ -527,12 +520,11 @@
 	<action
         name="set_car_material"
         type="js"
-        args="name, color, roughness, metalness, opacity, emissive"
+        args="name, color, roughness, metalness, opacity, emissive, clearcoat, clearcoatRoughness"
     ><![CDATA[
 		var hs_car = krpano.get("hotspot[car]");
 		if (hs_car && hs_car.threejsobject)
 		{
-			//console.log(hs_car.threejsobject);
 			hs_car.threejsobject.traverse( function(child)
 			{
 				if (child.isMesh)
@@ -540,32 +532,17 @@
 					var materials = Array.isArray(child.material) ? child.material : [child.material];
 					materials.forEach( function(material)
 					{
-
-						//console.log(material);
-
-
 						if ( krpano.utils.wildcmp(name,material.name) )
 						{
+							// Apply parameters
 							if (color != null) material.color.setHex(1*color);
 							if (roughness != null) material.roughness = Number(roughness);
 							if (metalness != null) material.metalness = Number(metalness);
 							if (opacity != null) material.opacity = Number(opacity);
-							if (emissive != null) material.emissive.setHex(1*emissive);
+							if (emissive != null && material.emissive) material.emissive.setHex(1*emissive);
+							if (clearcoat != null) material.clearcoat = Number(clearcoat);
+							if (clearcoatRoughness != null) material.clearcoatRoughness = Number(clearcoatRoughness);
 						}
-
-						/*
-						material.wireframe = true;
-						material.emissive.setHex(0);
-						material.emissiveIntensity = 0.0;
-						material.emissiveMap = null;
-						material.envMapIntensity = 0;
-						material.color.setHex(0x00FF00);
-						material.roughness = 100;
-						material.metalness = 100;
-						material.opacity = 0.5;
-						material.transparent = true;
-						material.map = null;
-						*/
 					});
 				}
 			});
